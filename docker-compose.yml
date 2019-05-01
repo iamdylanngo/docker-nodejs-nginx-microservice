@@ -1,0 +1,31 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:1.15.3-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/site.conf:/etc/nginx/conf.d/site.conf
+      -  /var/run/docker.sock:/tmp/docker.sock:ro
+    links: 
+      - node-app1
+      - node-app2  
+  node-app1:
+    build: ./app1
+    container_name: node-app1
+    expose: 
+      - "3000"
+    volumes: 
+      - ./app1/src:/usr/src/app1/src
+      - ./app1/package.json:/usr/src/app1/package.json
+      - /usr/src/app1/node_modules
+  node-app2:
+    build: ./app2
+    container_name: node-app2
+    expose: 
+      - "3001"
+    volumes: 
+      - ./app2/src:/usr/src/app2/src
+      - ./app2/package.json:/usr/src/app2/package.json
+      - /usr/src/app2/node_modules
